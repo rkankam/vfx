@@ -20,6 +20,9 @@ experiments:
       - weak_post_capture_sharpening
     strongest_signature: soft_surfaces_plus_exaggerated_edges_plus_chroma_spread
     evidence_policy: hashes_and_metadata_preserved_binary_media_not_republished
+    broader_generalization:
+      attention_bank_capture: https://github.com/rkankam/attention_bank/issues/29
+      attention_bank_archive_pr: https://github.com/rkankam/attention_bank/pull/30
     next: TX-002
 
   - id: TX-002
