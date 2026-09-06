@@ -92,6 +92,14 @@ reproduction:
   script: pipeline.sh
   preset: ../../../presets/tx_analog_edge_halo_v0.1.yaml
   ffmpeg_role: exact accepted proof implementation
+  verification:
+    executed_at: 2026-09-06
+    result: byte_identical
+    accepted_output_sha256: f955fd9800253f05c0c9e1545e2664835757158c927862d24d8895957f131f84
+    reproduced_output_sha256: f955fd9800253f05c0c9e1545e2664835757158c927862d24d8895957f131f84
+    note: >-
+      Re-running the committed pipeline parameters against the same input in the
+      qualification environment reproduced the accepted MP4 byte-for-byte.
 
 claims:
   proven:
