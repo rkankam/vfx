@@ -1,0 +1,148 @@
+id: tx_analog_edge_halo_v0.1
+status: proven
+experiment: TX-001
+validated_at: 2026-09-06
+
+intent:
+  family: degraded_electronic_video
+  target_signature:
+    - soft_internal_surfaces
+    - exaggerated_surviving_edges
+    - luma_chroma_bandwidth_asymmetry
+    - chroma_spread
+    - slight_chroma_misregistration
+    - generation_loss
+  anti_signature:
+    - generic_vhs_overlay
+    - uniform_global_blur
+    - maximal_tracking_damage
+    - decorative_scanlines_without_signal_logic
+    - final_stage_noise_as_the_entire_effect
+
+principles:
+  - sharpen_before_degrade
+  - degrade_chroma_more_than_luma
+  - process_pixel_scale_defects_at_low_resolution
+  - let_generation_n_errors_become_generation_n_plus_1_signal
+  - distinguish_camera_detail_enhancement_from_later_digital_sharpening
+
+source_assumptions:
+  expected_orientation: portrait
+  tested_width: 512
+  tested_height: 910
+  tested_frame_rate: 30
+  note: >-
+    Parameter values are frozen from the accepted proof. Resolution-sensitive
+    values must be re-qualified when the working resolution changes.
+
+pipeline:
+  generation_1:
+    format:
+      pixel_format: yuv444p
+
+    pre_sharpen:
+      semantic_role: camera_or_electronic_detail_enhancement
+      filter: unsharp
+      luma_matrix_x: 11
+      luma_matrix_y: 11
+      luma_amount: 2.25
+      chroma_matrix_x: 5
+      chroma_matrix_y: 5
+      chroma_amount: 0
+
+    working_resolution:
+      width: 288
+      height: 512
+      scaler: bicubic
+
+    bandwidth_loss:
+      luma:
+        filter: gaussian_blur
+        sigma: 0.50
+      chroma:
+        filter: gaussian_blur
+        sigma: 2.15
+      invariant: chroma_loss_must_exceed_luma_loss
+
+    chroma_registration:
+      filter: chromashift
+      cb_horizontal_pixels: 3
+      cb_vertical_pixels: 0
+      cr_horizontal_pixels: 1
+      cr_vertical_pixels: 0
+      edge_mode: smear
+
+    noise:
+      filter: noise
+      temporal: true
+      luma_strength: 6
+      cb_strength: 3
+      cr_strength: 3
+
+    pre_codec_format:
+      pixel_format: yuv420p
+
+    generation_codec:
+      codec: mpeg2video
+      qscale: 8
+      frame_rate: 30
+      semantic_role: generation_loss_not_final_delivery
+
+  generation_2:
+    reconstruction:
+      width: 512
+      height: 910
+      scaler: bicubic
+
+    post_sharpen:
+      semantic_role: later_digital_capture_resize_or_platform_enhancement
+      filter: unsharp
+      luma_matrix_x: 5
+      luma_matrix_y: 5
+      luma_amount: 0.45
+      chroma_matrix_x: 5
+      chroma_matrix_y: 5
+      chroma_amount: 0
+
+    delivery_format:
+      pixel_format: yuv420p
+
+    delivery_codec:
+      codec: libx264
+      preset: slow
+      crf: 24
+      faststart: true
+
+    audio:
+      source: original_input
+      codec: aac
+      bit_rate: 160k
+
+validation:
+  human_result: accepted
+  strongest_observation: >-
+    The chain preserves and exaggerates artificial boundaries while destroying
+    more of the texture inside those boundaries, producing soft surfaces with
+    conspicuous electronic/video-like edge halos and chroma spread.
+
+mutation_rules:
+  preserve_before_tuning:
+    - ordering_of_pre_sharpen_before_bandwidth_loss
+    - stronger_chroma_than_luma_blur
+    - low_resolution_working_stage
+    - real_intermediate_codec_generation
+    - weak_post_sharpen_after_decode
+  create_new_version_if_changed:
+    - working_resolution
+    - generation_codec
+    - stage_order
+    - addition_of_composite_signal_simulation
+    - addition_of_interlacing_or_deinterlacing
+    - materially_different_chroma_phase_or_delay_model
+
+next_qualification:
+  id: TX-002
+  url: https://github.com/rkankam/vfx/issues/1
+  question: >-
+    Does an explicit composite-signal stage add perceptual value that survives
+    delivery and cannot be approximated cheaply enough with FFmpeg alone?
