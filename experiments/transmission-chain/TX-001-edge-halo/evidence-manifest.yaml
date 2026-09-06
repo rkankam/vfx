@@ -1,0 +1,114 @@
+schema_version: 1
+experiment_id: TX-001
+status: proven
+validated_at: 2026-09-06
+validation:
+  type: human_perceptual_validation
+  result: accepted
+  note: >-
+    The processed video was judged probative for the target edge-halo / degraded
+    electronic-video family. This validates the reusable perceptual mechanism,
+    not the exact historical provenance of the target reference.
+
+repository_storage_policy:
+  binaries_committed: false
+  reason: >-
+    The repository is public. The target reference and source test video were
+    supplied in conversation and their redistribution rights/provenance were not
+    established. Preserve identity by digest and metadata rather than silently
+    republishing them.
+
+assets:
+  target_reference:
+    local_filename: IMG_2352.jpeg
+    sha256: 8b63f7716935084a803b1ae193d902f082604a6595ffd591ee9c17bfd02010b2
+    bytes: 156622
+    media_type: image/jpeg
+    width: 1536
+    height: 710
+    repository_storage: not_committed
+
+  test_input:
+    local_filename: KseSpvPaOm90Vg8FD3DMx_yz1f9o8Z.mp4
+    sha256: dea7db6dd471ed381ad553ef363c29dcc06fcfb0cb5e2ad53b9f4aa3dc4ac384
+    bytes: 6157397
+    media_type: video/mp4
+    duration_seconds: 10.005011
+    video:
+      codec: h264
+      profile: High
+      width: 512
+      height: 910
+      frame_rate: 30
+      pixel_format: yuv420p
+      color_space: bt709
+      bit_rate: 4791719
+      frames: 300
+    audio:
+      codec: aac
+      profile: LC
+      sample_rate: 44100
+      channels: 2
+      bit_rate: 127889
+    repository_storage: not_committed
+
+  accepted_output:
+    local_filename: KseSpvPaOm90Vg8FD3DMx_reference_degraded.mp4
+    sha256: f955fd9800253f05c0c9e1545e2664835757158c927862d24d8895957f131f84
+    bytes: 1895807
+    media_type: video/mp4
+    duration_seconds: 10.0
+    video:
+      codec: h264
+      profile: High
+      width: 512
+      height: 910
+      display_aspect_ratio: "9:16"
+      frame_rate: 30
+      pixel_format: yuv420p
+      color_space: bt709
+      bit_rate: 1345605
+      frames: 300
+      encoder: Lavc61.19.101 libx264
+    audio:
+      codec: aac
+      profile: LC
+      sample_rate: 44100
+      channels: 2
+      bit_rate: 161071
+    repository_storage: not_committed
+
+  before_after_frame:
+    local_filename: before_after_strong.png
+    sha256: 3baa88fe477b68385f33db472378aa13726f76ada1683a0f21c25f6980a35a37
+    bytes: 717752
+    media_type: image/png
+    width: 1024
+    height: 910
+    sampled_at_seconds: 5
+    repository_storage: not_committed
+
+reproduction:
+  script: pipeline.sh
+  preset: ../../../presets/tx_analog_edge_halo_v0.1.yaml
+  ffmpeg_role: exact accepted proof implementation
+  verification:
+    executed_at: 2026-09-06
+    result: byte_identical
+    accepted_output_sha256: f955fd9800253f05c0c9e1545e2664835757158c927862d24d8895957f131f84
+    reproduced_output_sha256: f955fd9800253f05c0c9e1545e2664835757158c927862d24d8895957f131f84
+    note: >-
+      Re-running the committed pipeline parameters against the same input in the
+      qualification environment reproduced the accepted MP4 byte-for-byte.
+
+claims:
+  proven:
+    - Strong luma edge enhancement before degradation can leave exaggerated contours after internal detail is removed.
+    - Chroma can be degraded more strongly than luma to produce spread/misregistration around otherwise legible structure.
+    - Real low-resolution processing makes pixel-scale chroma and blur defects perceptually meaningful after reconstruction.
+    - A codec generation inserted before reconstruction can turn inherited errors into signal for the next stage.
+  not_proven:
+    - Exact historical acquisition chain of the target reference.
+    - VHS participation in the target reference.
+    - Composite NTSC/PAL participation in the target reference.
+    - A unique physical cause for the target halo.
