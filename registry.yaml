@@ -1,0 +1,35 @@
+schema_version: 1
+updated_at: 2026-09-06
+
+experiments:
+  - id: TX-001
+    slug: edge-halo
+    family: transmission-chain
+    status: proven
+    validated_at: 2026-09-06
+    reusable: true
+    proof: experiments/transmission-chain/TX-001-edge-halo/
+    preset: presets/tx_analog_edge_halo_v0.1.yaml
+    invariant: docs/aesthetic-primitives/transmission-chain-as-aesthetic-system.md
+    field_integration: docs/field-signature-integration.md
+    core_rule: sharpen_before_degrade
+    secondary_rules:
+      - chroma_loss_greater_than_luma_loss
+      - low_resolution_pixel_scale_defect_stage
+      - generation_loss_before_reconstruction
+      - weak_post_capture_sharpening
+    strongest_signature: soft_surfaces_plus_exaggerated_edges_plus_chroma_spread
+    evidence_policy: hashes_and_metadata_preserved_binary_media_not_republished
+    next: TX-002
+
+  - id: TX-002
+    slug: composite-signal-qualification
+    family: transmission-chain
+    status: parked
+    reusable: false
+    issue: https://github.com/rkankam/vfx/issues/1
+    question: >-
+      Does an explicit composite-signal stage add perceptual value that survives
+      delivery and cannot be approximated cheaply enough with FFmpeg alone?
+    candidate_dependency: ntsc-rs
+    start_condition: TX-001 closeout accepted and merged
